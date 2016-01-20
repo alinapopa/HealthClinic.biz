@@ -53,10 +53,32 @@ You can use SQL Server 2014 Management Studio to examine the database you have c
 
 The Office 365 integration allows the patient to find available appointment spots in the doctor's Office 365 calendar; when a new appointment is created from the patient app, it will appear in both the patient's calendar and in the doctor's calendar. This is done using [Microsoft Graph API](http://graph.microsoft.io/). You can watch an introduction to Microsoft Graph API in this Connect(); [video] (https://channel9.msdn.com/Events/Visual-Studio/Connect-event-2015/301).
 
-The web app can access all doctors' Office 365 calendars. The patient app (iOS and Android Xamarin apps; the UWP patient app is not integrated with Office 365) can access the patient O365 calendar. The patient app gets the doctor availability info from the web app. When a new appointment is created, the patient app updates the patient calendar, and the web app updates the doctor's calendar.
+The web app can access all doctors' Office 365 calendars. The patient app (iOS and Android Xamarin apps; the UWP patient app is not integrated with Office 365) can access the patient Office 365 calendar. The patient app gets the doctor availability info from the web app. When a new appointment is created, the patient app updates the patient calendar, and the web app updates the doctor's calendar.
 
-To set up the integration with Office 365, the web app must be added to Azure Active Directory through the Azure Portal and authorizations configured; the mobile apps (iOS and Android app) must be registered to Active Directory at https://apps.dev.microsoft.com.
+To set up the integration with Office 365, the web app (ASP.NET app) must be added to Azure Active Directory through the Azure Portal and authorizations configured; the mobile apps (iOS and Android app) must be registered to Active Directory at https://apps.dev.microsoft.com.
 Use the Azure Portal to [register the web application] (https://azure.microsoft.com/en-us/documentation/articles/mobile-services-how-to-register-active-directory-authentication/#registering-your-app) in Azure Active Directory under your Organization. From Azure Portal, configure the application's permissions: go to _Configure_ tab, then _Permissions to other applications_ > _Add Application_ > _Microsoft Graph_. Under _Application Permissions_ check _Read calendars in all mailboxes_.
 Read the following [documentation] (https://msdn.microsoft.com/en-us/office/office365/howto/building-service-apps-in-office-365) to learn how to create a certificate and access token for the application. Add the certificate (.pfx file) under folder [src\MyHealth.Web\content](https://github.com/Microsoft/HealthClinic.biz/tree/master/src/MyHealth.Web/content). In [src\MyHealth.Web\appsettings.json](https://github.com/Microsoft/HealthClinic.biz/blob/master/src/MyHealth.Web/appsettings.json), set the "ClientCertificatePfx" value to your certificate file name. Also in the same appsettings.json file, set "ClientId" to the value you get from Azure Portal. Create a key in Azure Portal and fill the "ClientKey" value in json file. Also fill the values for "ClientCertificatePassword" and "DebugTenantId".
 
-User the following [link] (https://azure.microsoft.com/en-us/documentation/articles/active-directory-v2-app-registration/) for instructions to register the iOS and Android application to Azure Directory. Then fill the DroidClientId and iOSClientId in file src\MyHealth.Client.Core\AppSettings.cs with the ID's obtained at registration.
+User the following [link] (https://azure.microsoft.com/en-us/documentation/articles/active-directory-v2-app-registration/) for instructions to register the iOS and Android application to Azure Directory. Then fill the DroidClientId and iOSClientId in file [src\MyHealth.Client.Core\AppSettings.cs](https://github.com/Microsoft/HealthClinic.biz/blob/master/src/MyHealth.Client.Core/AppSettings.cs) with the ID's obtained at registration.
+
+**WPF app**
+
+The WPF app is the receptionist app, which allows the receptionist to see patients' data, upcoming appointments, and create new appointments. The WPF app code is in [src\MyHealth.Client.Desktop] (https://github.com/Microsoft/HealthClinic.biz/tree/master/src/MyHealth.Client.Desktop). The WPF application shares code with the UWP app; the shered code is a portable library [MyHealth.Client.Core] (https://github.com/Microsoft/HealthClinic.biz/tree/master/src). 
+
+Both WPF and the UWP get the data from the database in Azure, using the web app; the ServerUrl in file [src\MyHealth.Client.Core\AppSettings.cs] (https://github.com/Microsoft/HealthClinic.biz/blob/master/src/MyHealth.Client.Core/AppSettings.cs) needs to be set to the value of your URL. For testing, the WPF application can get the data locally.
+
+To get data from the database that is created locally: run the ASP.NET application in localhost (see the instructions above for running the web site). Set the ServerUrl value in AppSettings.cs to the local host: 
+```csharp
+ public static string ServerlUrl = "http://localhost:34393/";
+```
+Leave the ASP.NET application running, then on the same machine run the WPF application: open solution 02_Demos_NativeMicrosoftApps. Set MyHealth.Client.Desktop as startup project the run the application.
+
+To use the database from Azure: deploy the Web application to Azure (see instructions above for running the website) then set the ServerUrl value to your website URL.
+
+**UWP app**
+
+The UWP app is the patient app, which lets the user see their data: appointments, medication schedule, and allows creating new appointments. To run the UWP app: open solution 02_Demos_NativeMicrosoftApps in Visual Studio, set MyHealth.Client.W10.UWP as startup project and run. The ServerUrl string  in file [src\MyHealth.Client.Core\AppSettings.cs] (https://github.com/Microsoft/HealthClinic.biz/blob/master/src/MyHealth.Client.Core/AppSettings.cs) needs to be set to the right value, in the same way as described for the WPF app.
+
+**iOS Xamarin app**
+
+
