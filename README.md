@@ -59,7 +59,7 @@ To set up the integration with Office 365, the web app (ASP.NET app) must be add
 Use the Azure Portal to [register the web application] (https://azure.microsoft.com/en-us/documentation/articles/mobile-services-how-to-register-active-directory-authentication/#registering-your-app) in Azure Active Directory under your Organization. From Azure Portal, configure the application's permissions: go to _Configure_ tab, then _Permissions to other applications_ > _Add Application_ > _Microsoft Graph_. Under _Application Permissions_ check _Read calendars in all mailboxes_.
 Read the following [documentation] (https://msdn.microsoft.com/en-us/office/office365/howto/building-service-apps-in-office-365) to learn how to create a certificate and access token for the application. Add the certificate (.pfx file) under folder [src\MyHealth.Web\content](https://github.com/Microsoft/HealthClinic.biz/tree/master/src/MyHealth.Web/content). In [src\MyHealth.Web\appsettings.json](https://github.com/Microsoft/HealthClinic.biz/blob/master/src/MyHealth.Web/appsettings.json), set the "ClientCertificatePfx" value to your certificate file name. Also in the same appsettings.json file, set "ClientId" to the value you get from Azure Portal. Create a key in Azure Portal and fill the "ClientKey" value in json file. Also fill the values for "ClientCertificatePassword" and "DebugTenantId".
 
-User the following [link] (https://azure.microsoft.com/en-us/documentation/articles/active-directory-v2-app-registration/) for instructions to register the iOS and Android application to Azure Directory. Then fill the DroidClientId and iOSClientId in file [src\MyHealth.Client.Core\AppSettings.cs](https://github.com/Microsoft/HealthClinic.biz/blob/master/src/MyHealth.Client.Core/AppSettings.cs) with the ID's obtained at registration.
+User the following [link] (https://azure.microsoft.com/en-us/documentation/articles/active-directory-v2-app-registration/) for instructions to register the iOS and Android application to Azure Directory. Then fill the DroidClientId and iOSClientId in file [src\MyHealth.Client.Core\AppSettings.cs](https://github.com/Microsoft/HealthClinic.biz/blob/master/src/MyHealth.Client.Core/AppSettings.cs) with the ID's obtained at registration. Replace the RedirectUri in the same file if needed.
 
 **WPF app**
 
@@ -77,7 +77,7 @@ Leave the ASP.NET application running, then on the same machine run the WPF appl
 
 **UWP app**
 
-The UWP app is the patient app, which lets the user see their data: appointments, medication schedule, and allows creating new appointments. To run the UWP app: open solution 02_Demos_NativeMicrosoftApps in Visual Studio, set MyHealth.Client.W10.UWP as startup project and run. The ServerUrl string  in file [src\MyHealth.Client.Core\AppSettings.cs] (https://github.com/Microsoft/HealthClinic.biz/blob/master/src/MyHealth.Client.Core/AppSettings.cs) needs to be set to the right value, in the same way as described for the WPF app.
+The UWP app is the patient app, which lets the user see their data: appointments, medication schedule, and allows creating new appointments. To run the UWP app: open solution 02_Demos_NativeMicrosoftApps in Visual Studio, set MyHealth.Client.W10.UWP as startup project and run. The ServerUrl string  in file [src\MyHealth.Client.Core\AppSettings.cs] (https://github.com/Microsoft/HealthClinic.biz/blob/master/src/MyHealth.Client.Core/AppSettings.cs) needs to be set to the right value, in the same way as described for the WPF app. For the Patient app, the server URL can also be set directly in the application: after the application starts, go to Settings > Server Address.
 
 **iOS Xamarin app**
 
@@ -85,6 +85,13 @@ A Xamarin license is needed. You will be prompted to sign-in with the Xamarin ac
 
 Visual Studio needs to have the Cross-Platform tools installed: within the Visual Studio installer, select a Custom install and check the box _Cross-Platform Mobile Development_ > _C#/.NET (Xamarin)_. 
 
-Open solution 04_Demos_NativeXamarinApps in Visual Studio. Set MyHealth.Client.iOS as startup project. Make sure your Mac is available on the network and paired with Visual Studio. 
+Open solution 04_Demos_NativeXamarinApps in Visual Studio. Log into Xamarin account if prompted. Make sure your Mac is available on the network and [paired](http://developer.xamarin.com/guides/ios/getting_started/installation/windows/#Connecting_to_the_Mac) with Visual Studio. If the pairing menu does not automatically appear, in Visual Studio go to _Tools_ > _Options_ > _Xamarin_ > _iOS Settings_ > _Find Xamarin Mac Agent_, and connect with your Mac. 
 
+Set MyHealth.Client.iOS as startup project. Set Configuration to iPhoneSimulator, build and run. The application will start in the Simulator on the Mac. To get data, the ServerUrl string  in file [src\MyHealth.Client.Core\AppSettings.cs] (https://github.com/Microsoft/HealthClinic.biz/blob/master/src/MyHealth.Client.Core/AppSettings.cs) needs to be set to the address where the web app was deployed.
 
+**Android Xamarin app**
+
+Open solution 04_Demos_NativeXamarinApps in Visual Studio. Set MyHealth.Client.Droid as startup project. Set "VS Emulator" in the run configuration. To get data, the ServerUrl string  in file [src\MyHealth.Client.Core\AppSettings.cs] (https://github.com/Microsoft/HealthClinic.biz/blob/master/src/MyHealth.Client.Core/AppSettings.cs) needs to be set to the address where the web app was deployed.
+
+**Cordova apps**
+Open solution 05_Demos_Cordova in Visual Studio. If the "Dependencies" folder in Solution Explorer shows "Not installed", right click on it > Restore Packages. Set run target to Ripple. Build solution. 
